@@ -12,7 +12,7 @@ def asmatrix(op):
 
 
 @asmatrix.register
-def asmatrix(op: qibo.operator.Operator, dtype=np.csingle):
+def asmatrix_op(op: qibo.operator.Operator, dtype=np.csingle):
     raise NotImplementedError()
 
 
