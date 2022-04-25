@@ -58,3 +58,14 @@ def asmatrix_z(_: qibo.operator.Z, dtype=np.csingle):
         ],
         dtype=dtype,
     )
+
+
+@asmatrix.register
+def asmatrix_rz(op: qibo.operator.Rz, dtype=np.csingle):
+    return np.array(
+        [
+            [1, 0],
+            [0, np.exp(1j * op.theta)],
+        ],
+        dtype=dtype,
+    )
