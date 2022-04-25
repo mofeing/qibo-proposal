@@ -17,7 +17,7 @@ def asmatrix_op(op: qibo.operator.Operator, dtype=np.csingle):
 
 
 @asmatrix.register
-def asmatrix_i(op: qibo.operator.I, dtype=np.csingle):
+def asmatrix_i(_: qibo.operator.I, dtype=np.csingle):
     return np.array(
         [
             [1, 0],
@@ -28,7 +28,7 @@ def asmatrix_i(op: qibo.operator.I, dtype=np.csingle):
 
 
 @asmatrix.register
-def asmatrix_x(op: qibo.operator.X, dtype=np.csingle):
+def asmatrix_x(_: qibo.operator.X, dtype=np.csingle):
     return np.array(
         [
             [0, 1],
@@ -39,7 +39,7 @@ def asmatrix_x(op: qibo.operator.X, dtype=np.csingle):
 
 
 @asmatrix.register
-def asmatrix_y(op: qibo.operator.Y, dtype=np.csingle):
+def asmatrix_y(_: qibo.operator.Y, dtype=np.csingle):
     return np.array(
         [
             [0, -1j],
@@ -50,7 +50,7 @@ def asmatrix_y(op: qibo.operator.Y, dtype=np.csingle):
 
 
 @asmatrix.register
-def asmatrix(op: qibo.operator.Z, dtype=np.csingle):
+def asmatrix_z(_: qibo.operator.Z, dtype=np.csingle):
     return np.array(
         [
             [1, 0],
