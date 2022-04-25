@@ -1,4 +1,4 @@
-class Operator:
+class Operator(type):
     def __new__(cls, name: str, /, nqubits: int = 1, *, params: list[str] = None):
         # call to Operator(...) creates new class
         if cls is Operator:
@@ -6,15 +6,13 @@ class Operator:
 
         # call from child
         elif issubclass(cls, Operator):
-            # TODO fix
             if cls.params:
                 # parametric class (e.g. Rx(theta))
                 # generate new metaclass, descendent of Operator, that creates a final class
                 def __Operator_parametric__new__(cls, *args, **kwargs):
-                    print("hallo!")
                     return type(name, (cls,), {"_" + param: kwargs[param] for param in cls.params})  # same name
 
-                return type(cls.name, (cls,), {"__new__": __Operator_parametric__new__} | {"__" + param: None for param in cls.params})
+                return type(cls.name, (Operator,), {"__new__": __Operator_parametric__new__} | {"__" + param: None for param in cls.params})
             else:
                 # instantiate operator (calls __init__ afterwards)
                 return super().__new__(cls)
