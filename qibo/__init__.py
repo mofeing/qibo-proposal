@@ -1,5 +1,5 @@
 __version__ = "0.1.0"
 
-from .operator import *
+from .gate import *
 from .circuit import *
 from .engine import *

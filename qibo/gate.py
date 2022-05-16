@@ -20,7 +20,7 @@ def Const(obj: T) -> T:
     return property(fget=getter, fset=None, fdel=deletter)
 
 
-class Operator(object):
+class Gate(object):
     __parametric__: bool = False
     __parameters__: Optional[dict[str, Number]] = None
 
@@ -90,26 +90,26 @@ class Operator(object):
         raise AttributeError(f"{attr} not found")
 
 
-I = Operator.new_type("I")
-X = Operator.new_type("X")
-Y = Operator.new_type("Y")
-Z = Operator.new_type("Z")
+I = Gate.new_type("I")
+X = Gate.new_type("X")
+Y = Gate.new_type("Y")
+Z = Gate.new_type("Z")
 
-Rx = Operator.new_type("Rx", params=["theta"])
-Ry = Operator.new_type("Ry", params=["theta"])
-Rz = Operator.new_type("Rz", params=["theta"])
+Rx = Gate.new_type("Rx", params=["theta"])
+Ry = Gate.new_type("Ry", params=["theta"])
+Rz = Gate.new_type("Rz", params=["theta"])
 
-H = Operator.new_type("H")
+H = Gate.new_type("H")
 
-S = Operator.new_type("S")
-Sd = Operator.new_type("Sd")
-T = Operator.new_type("T")
-Td = Operator.new_type("Td")
+S = Gate.new_type("S")
+Sd = Gate.new_type("Sd")
+T = Gate.new_type("T")
+Td = Gate.new_type("Td")
 
-Swap = Operator.new_type("Swap", n=2)
-iSwap = Operator.new_type("iSwap", n=2)
+Swap = Gate.new_type("Swap", n=2)
+iSwap = Gate.new_type("iSwap", n=2)
 
-Cx = Operator.new_type("Cx", n=2)
-Cy = Operator.new_type("Cy", n=2)
-Cz = Operator.new_type("Cz", n=2)
-Control = Operator.new_type("Control", n=2, params=["U"])
+Cx = Gate.new_type("Cx", n=2)
+Cy = Gate.new_type("Cy", n=2)
+Cz = Gate.new_type("Cz", n=2)
+Control = Gate.new_type("Control", n=2, params=["U"])

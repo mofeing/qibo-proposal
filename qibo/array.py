@@ -1,5 +1,5 @@
 from functools import singledispatch
-import qibo.operator
+import qibo.gate
 import numpy as np
 
 
@@ -12,12 +12,12 @@ def asarray(op):
 
 
 @asarray.register
-def asarray_op(op: qibo.operator.Operator, dtype=np.csingle):
+def asarray_op(op: qibo.gate.Gate, dtype=np.csingle):
     raise NotImplementedError()
 
 
 @asarray.register
-def asarray_i(_: qibo.operator.I, dtype=np.csingle):
+def asarray_i(_: qibo.gate.I, dtype=np.csingle):
     return np.array(
         [
             [1, 0],
@@ -28,7 +28,7 @@ def asarray_i(_: qibo.operator.I, dtype=np.csingle):
 
 
 @asarray.register
-def asarray_x(_: qibo.operator.X, dtype=np.csingle):
+def asarray_x(_: qibo.gate.X, dtype=np.csingle):
     return np.array(
         [
             [0, 1],
@@ -39,7 +39,7 @@ def asarray_x(_: qibo.operator.X, dtype=np.csingle):
 
 
 @asarray.register
-def asarray_y(_: qibo.operator.Y, dtype=np.csingle):
+def asarray_y(_: qibo.gate.Y, dtype=np.csingle):
     return np.array(
         [
             [0, -1j],
@@ -50,7 +50,7 @@ def asarray_y(_: qibo.operator.Y, dtype=np.csingle):
 
 
 @asarray.register
-def asarray_z(_: qibo.operator.Z, dtype=np.csingle):
+def asarray_z(_: qibo.gate.Z, dtype=np.csingle):
     return np.array(
         [
             [1, 0],
@@ -61,7 +61,7 @@ def asarray_z(_: qibo.operator.Z, dtype=np.csingle):
 
 
 @asarray.register
-def asarray_rz(op: qibo.operator.Rz, dtype=np.csingle):
+def asarray_rz(op: qibo.gate.Rz, dtype=np.csingle):
     return np.array(
         [
             [1, 0],

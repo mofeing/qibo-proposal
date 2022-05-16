@@ -1,10 +1,10 @@
 import abc
-from qibo.operator import Operator
+from qibo.gate import Gate
 
 
-class Engine(abc.ABC):
+class Engine:
     @abc.abstractmethod
-    def apply_gate(self, gate: Operator):
+    def apply_gate(self, gate: Gate):
         pass
 
     @abc.abstractmethod
