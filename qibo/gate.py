@@ -90,6 +90,19 @@ class Gate(object):
         raise AttributeError(f"{attr} not found")
 
 
+class ParametricGate(metaclass=abc.ABCMeta):
+    __slots__ = ()
+
+    @classmethod
+    def __subclasshook__(cls, subcls):
+        if cls is not ParametricGate:
+            return NotImplemented
+
+        return hasattr(subcls, "__parameters__")
+
+    __parameters__ = []
+
+
 I = Gate.new_type("I")
 X = Gate.new_type("X")
 Y = Gate.new_type("Y")
