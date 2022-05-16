@@ -1,5 +1,6 @@
 from numbers import Number
-from typing import Optional, TypeVar
+from typing import Any, Optional, Sequence, TypeVar
+import abc
 
 
 T = TypeVar("T")
