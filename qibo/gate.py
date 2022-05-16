@@ -126,3 +126,11 @@ Cx = Gate.new_type("Cx", n=2)
 Cy = Gate.new_type("Cy", n=2)
 Cz = Gate.new_type("Cz", n=2)
 Control = Gate.new_type("Control", n=2, params=["U"])
+
+
+class Pauli(metaclass=abc.ABCMeta):
+    """Abstract Base Class for Pauli gates (I, X, Y, Z)."""
+
+
+for cls in [I, X, Y, Z]:
+    Pauli.register(cls)
