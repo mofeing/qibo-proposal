@@ -65,10 +65,9 @@ class Gate:
 
 
 class Parametric(metaclass=abc.ABCMeta):
-
     @classmethod
     def __subclasshook__(cls, subcls):
-        if cls is not ParametricGate:
+        if cls is not Parametric:
             return NotImplemented
 
         return hasattr(subcls, "__parameters__")
