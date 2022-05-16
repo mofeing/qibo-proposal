@@ -1,11 +1,17 @@
 import abc
+from typing import final
 from qibo.gate import Gate
 
 
-class Engine:
+class Engine(abc.ABC):
     @abc.abstractmethod
     def apply_gate(self, gate: Gate):
         pass
+
+    @final
+    def __iadd__(self, gate: Gate):
+        self.apply_gate(gate)
+        return self
 
     @abc.abstractmethod
     def measure(self, qubit: int):
