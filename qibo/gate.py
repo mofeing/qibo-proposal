@@ -117,7 +117,7 @@ for cls in [I, X, Y, Z, H, S, Cx]:
     Clifford.register(cls)
 
 
-class NGate:
+class Size:
     def __init__(self, n: int):
         self.n = n
 
