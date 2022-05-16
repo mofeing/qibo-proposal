@@ -134,3 +134,14 @@ class Pauli(metaclass=abc.ABCMeta):
 
 for cls in [I, X, Y, Z]:
     Pauli.register(cls)
+
+
+class NGate:
+    def __init__(self, n: int):
+        self.n = n
+
+    def __subclasscheck__(self, subcls: type) -> bool:
+        return issubclass(subcls, Gate) and self.n == subcls.nqubits
+
+    def __instancecheck__(self, instance: Any) -> bool:
+        return issubclass(instance.__class__, self)
