@@ -3,21 +3,21 @@ import qibo.operator
 import numpy as np
 
 
-__all__ = ["asmatrix"]
+__all__ = ["asarray"]
 
 
 @singledispatch
-def asmatrix(op):
+def asarray(op):
     raise TypeError()
 
 
-@asmatrix.register
-def asmatrix_op(op: qibo.operator.Operator, dtype=np.csingle):
+@asarray.register
+def asarray_op(op: qibo.operator.Operator, dtype=np.csingle):
     raise NotImplementedError()
 
 
-@asmatrix.register
-def asmatrix_i(_: qibo.operator.I, dtype=np.csingle):
+@asarray.register
+def asarray_i(_: qibo.operator.I, dtype=np.csingle):
     return np.array(
         [
             [1, 0],
@@ -27,8 +27,8 @@ def asmatrix_i(_: qibo.operator.I, dtype=np.csingle):
     )
 
 
-@asmatrix.register
-def asmatrix_x(_: qibo.operator.X, dtype=np.csingle):
+@asarray.register
+def asarray_x(_: qibo.operator.X, dtype=np.csingle):
     return np.array(
         [
             [0, 1],
@@ -38,8 +38,8 @@ def asmatrix_x(_: qibo.operator.X, dtype=np.csingle):
     )
 
 
-@asmatrix.register
-def asmatrix_y(_: qibo.operator.Y, dtype=np.csingle):
+@asarray.register
+def asarray_y(_: qibo.operator.Y, dtype=np.csingle):
     return np.array(
         [
             [0, -1j],
@@ -49,8 +49,8 @@ def asmatrix_y(_: qibo.operator.Y, dtype=np.csingle):
     )
 
 
-@asmatrix.register
-def asmatrix_z(_: qibo.operator.Z, dtype=np.csingle):
+@asarray.register
+def asarray_z(_: qibo.operator.Z, dtype=np.csingle):
     return np.array(
         [
             [1, 0],
@@ -60,8 +60,8 @@ def asmatrix_z(_: qibo.operator.Z, dtype=np.csingle):
     )
 
 
-@asmatrix.register
-def asmatrix_rz(op: qibo.operator.Rz, dtype=np.csingle):
+@asarray.register
+def asarray_rz(op: qibo.operator.Rz, dtype=np.csingle):
     return np.array(
         [
             [1, 0],
