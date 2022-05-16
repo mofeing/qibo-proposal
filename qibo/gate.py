@@ -136,6 +136,14 @@ for cls in [I, X, Y, Z]:
     Pauli.register(cls)
 
 
+class Clifford(metaclass=abc.ABCMeta):
+    """Abstract Base Class for Clifford gates."""
+
+
+for cls in [I, X, Y, Z, H, S, Cx]:
+    Clifford.register(cls)
+
+
 class NGate:
     def __init__(self, n: int):
         self.n = n
