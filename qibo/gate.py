@@ -21,74 +21,47 @@ def Const(obj: T) -> T:
     return property(fget=getter, fset=None, fdel=deletter)
 
 
-class Gate(object):
-    __parametric__: bool = False
-    __parameters__: Optional[dict[str, Number]] = None
+class Gate:
+    __slots__ = ("__qubits__",)
 
-    def __new__(cls, *args, params=None, **kwargs):
-        if cls.__parametric__:
-            # shortcut
-            if params:
-                return super().__new__(cls, **kwargs)
+    def __init__(self, *qubits):
+        super().__init__()
 
-            # TODO
-            # e.g. Rx(3, theta=π/4)
-
-            # e.g. Rotation on X-axis acting on qubit 4:
-            #   gate = Rx(π/4)
-            #   circ += gate(4)
-            assert len(args) == len(cls.__parameters__), "must only provide parameters"
-            params = {paramname: value for paramname, value in zip(cls.__parameters__.keys(), args)}
-
-            return lambda *qubits: cls(*qubits, params=params, **kwargs)
-        else:
-            return super().__new__(cls, **kwargs)
-
-    def __init_subclass__(cls, parameters: Optional[list[str]] = None, **kwargs):
-        super().__init_subclass__(**kwargs)
-
-        if parameters:
-            cls.__parametric__ = True
-            cls.__parameters__ = {param: None for param in parameters}
-
-    def __init__(self, *qubits, params=None, **kwargs):
-        if len(qubits) != self.n:
-            raise ValueError(f"must provide {self.n} qubit indices only")
-
-        self._qubits = qubits
-
-        if self.__parametric__:
-            assert set(self.__parameters__.keys()) == set(params.keys()), "must only provide parameters"
-
-            self.__parameters__ |= params
+        self.__qubits__ = qubits
 
     @classmethod
-    def new_type(cls, name: str, /, n: int = 1, *, params: list[str] = None):
+    def new_type(cls, name: str, /, n: int = 1, *, params: Sequence[str] = None):
+        attrs = {}
         if params:
-            return type(name, (cls,), {"n": Const(n)}, parameters=params)
-        else:
-            return type(name, (cls,), {"n": Const(n)})
+            attrs = {
+                "__parameters__": {param: None for param in params},
+                # "__slots__": ("__parameters__",),
+            }
 
-    def __len__(cls):
-        return cls.n
+        return type(name, (cls,), attrs, nqubits=n)
 
     @classmethod
-    def isparametric(cls) -> bool:
-        return cls.__parametric__
+    @property
+    def nqubits(cls) -> int:
+        return cls.__nqubits__
 
-    def params(self) -> Optional[dict[str, Number]]:
-        return self.__parameters__
+    def __init_subclass__(cls, /, nqubits: int = None):
+        super().__init_subclass__()
+
+        if nqubits is None:
+            raise ValueError(f"{nqubits=} must a non-zero positive integer")
+
+        cls.__nqubits__ = nqubits
 
     def __getattr__(self, attr: str):
         """Retrieve parameter if any."""
-        if not self.__parametric__:
-            raise AttributeError(f"no parameters")
+        if not isinstance(self, Parametric):
+            raise AttributeError(f"{self.__class__} is not Parametric")
 
-        attr_value = self.__parameters__.get(attr, False)
-        if attr_value:
-            return attr_value
-
-        raise AttributeError(f"{attr} not found")
+        try:
+            return self.__parameters__[attr]
+        except KeyError as err:
+            raise AttributeError(str(err))
 
 
 class Parametric(metaclass=abc.ABCMeta):
