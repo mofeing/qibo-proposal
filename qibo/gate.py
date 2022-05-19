@@ -3,24 +3,6 @@ from typing import Any, Optional, Sequence, TypeVar
 import abc
 
 
-T = TypeVar("T")
-
-
-def Const(obj: T) -> T:
-    def getter(_):
-        return obj
-
-    if hasattr(obj, "__del__"):
-
-        def deletter(o):
-            o.__del__()
-
-    else:
-        deletter = None
-
-    return property(fget=getter, fset=None, fdel=deletter)
-
-
 class Gate:
     __slots__ = ("__qubits__",)
 
