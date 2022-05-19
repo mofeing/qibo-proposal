@@ -1,6 +1,6 @@
-from numbers import Number
-from typing import Any, Optional, Sequence, TypeVar
+from typing import Any, Sequence
 import abc
+from typing_extensions import Self
 
 
 class Gate:
@@ -8,6 +8,9 @@ class Gate:
 
     def __init__(self, *qubits):
         super().__init__()
+
+        if len(qubits) != self.nqubits:
+            raise ValueError(f"number of qubits must be {self.nqubits}")
 
         self.__qubits__ = qubits
 
@@ -26,6 +29,10 @@ class Gate:
     @property
     def nqubits(cls) -> int:
         return cls.__nqubits__
+
+    @property
+    def qubits(self) -> Sequence[int]:
+        return self.__qubits__
 
     def __init_subclass__(cls, /, nqubits: int = None):
         super().__init_subclass__()
