@@ -1,12 +1,17 @@
 from functools import singledispatchmethod
-from typing_extensions import Self
 from qibo.gate import Gate
 import networkx as nx
-from uuid import uuid5
+from uuid import uuid4
+import sys
+
+if sys.version_info >= (3, 11):
+    from typing import Self
+else:
+    from typing_extensions import Self
 
 
 class Circuit:
-    __slots__ = ("graph",)
+    __slots__ = ("graph", "__nqubits")
 
     def __init__(self, nqubits: int):
         graph = nx.DiGraph()
@@ -17,14 +22,11 @@ class Circuit:
         graph.add_edges_from(((f"l{i}i", f"l{i}o", {"lane": i}) for i in range(nqubits)))
 
         self.graph = graph
+        self.__nqubits = nqubits
 
     @property
     def nqubits(self) -> int:
         return self.__nqubits
-
-    @property
-    def layers(self) -> int:
-        raise NotImplementedError()
 
     @property
     def dagger(self) -> Self:
