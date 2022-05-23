@@ -6,15 +6,16 @@ build-backend = "setuptools.build_meta"
 name = "qibo"
 version = "0.1.0"
 description = ""
-authors = ["Sergio Sánchez Ramírez <sergio.sanchez.ramirez@bsc.es>"]
 dependencies = [
-	"numpy = ^1.22.3"
+	"numpy>=1.22",
+	"networkx"
 ]
 
 [project.optional-dependencies]
 dev = [
 	"pytest>=5.2",
 	"black>=22.3.0",
+	"pylint",
 ]
 
 [tool.setuptools]
