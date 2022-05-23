@@ -4,7 +4,7 @@ from numbers import Number
 import numpy as np
 
 
-class Gate(abc.ABC):
+class Gate:
     __slots__ = ("__qubits__",)
 
     def __init__(self, *qubits):
@@ -24,7 +24,7 @@ class Gate(abc.ABC):
     def qubits(self) -> Sequence[int]:
         return self.__qubits__
 
-    @abc.abstractproperty
+    @classmethod
     @property
     def dagger(cls) -> type:
         raise NotImplementedError()
@@ -50,9 +50,6 @@ class Gate(abc.ABC):
 
 
 class Size:
-    def __init__(self, n: int):
-        self.n = n
-
     def __class_getitem__(cls, n: int):
         return type(
             f"Size[{n}]",
@@ -64,14 +61,10 @@ class Size:
         )
 
     def __subclasscheck__(self, subcls: type) -> bool:
-        return issubclass(subcls, Gate) and self.n == subcls.nqubits
+        return issubclass(subcls, Gate) and self.__nqubits__ == subcls.nqubits
 
     def __instancecheck__(self, instance: Any) -> bool:
         return issubclass(instance.__class__, self)
-
-    @staticmethod
-    def of(cls: type) -> int:
-        return Size(cls.__nqubits__)
 
 
 class Parametric(metaclass=abc.ABCMeta):
@@ -97,6 +90,7 @@ class Hermitian(metaclass=abc.ABCMeta):
     def __subclasshook__(cls, subcls):
         return hasattr(subcls, "__hermitian__") and subcls.__hermitian__
 
+    @classmethod
     @property
     def dagger(cls):
         return cls
@@ -147,6 +141,11 @@ class AxialRotation:
 
         return np.isclose(np.remainder(angle, np.pi), 0.0)
 
+    @classmethod
+    @property
+    def dagger(cls):
+        return cls.__mro__[1][-cls.__parameters__["angle"]]
+
 
 class Rx(AxialRotation, Size[1], Gate):
     pass
@@ -164,12 +163,16 @@ class H(Hermitian, Size[1], Gate):
     pass
 
 
-class S(Hermitian, Size[1], Gate):
+class S(Clifford, Size[1], Gate):
     pass
 
 
 class Sd(Size[1], Gate):
     pass
+
+
+S.dagger = Sd
+Sd.dagger = S
 
 
 class T(Size[1], Gate):
@@ -180,7 +183,11 @@ class Td(Size[1], Gate):
     pass
 
 
-class Swap(Size[2], Gate):
+T.dagger = Td
+Td.dagger = T
+
+
+class Swap(Hermitian, Size[2], Gate):
     pass
 
 
@@ -188,18 +195,53 @@ class iSwap(Size[2], Gate):
     pass
 
 
-# class Control(Gate):
-#     pass
+class Control(Size[2], Gate):
+    def __class_getitem__(cls, u: type):
+        assert issubclass(u, Gate)
+        return type(
+            f"Control[{u.__name__}]",
+            (Control,),
+            {
+                "__u__": u,
+            },
+        )
+
+    def __init__(self, control: int = None, target: int = None):
+        control = (control,) if isinstance(control, int) else tuple(control)
+        target = (target,) if isinstance(target, int) else tuple(target)
+
+        self._control = control
+        self._target = target
+
+        super().__init__(*control, *target)
+
+    @property
+    def control(self) -> tuple[int, ...]:
+        return self._control
+
+    @property
+    def target(self) -> tuple[int, ...]:
+        return self._target
+
+    @classmethod
+    @property
+    def __nqubits__(cls) -> int:
+        return 2
+
+    @classmethod
+    @property
+    def __hermitian__(cls) -> bool:
+        return issubclass(cls.__u__, Hermitian)
+
+    @classmethod
+    @property
+    def dagger(cls):
+        return cls[cls.__u__.dagger]
 
 
-# Swap = Gate.new_type("Swap", n=2)
-# iSwap = Gate.new_type("iSwap", n=2)
-
-# Cx = Gate.new_type("Cx", n=2)
-# Cy = Gate.new_type("Cy", n=2)
-# Cz = Gate.new_type("Cz", n=2)
-# Control = Gate.new_type("Control", n=2, params=["U"])
+Cx = Control[X]
+Cy = Control[Y]
+Cz = Control[Z]
 
 
-# for cls in [I, X, Y, Z, H, S, Cx]:
-#     Clifford.register(cls)
+Clifford.register(Cx)
