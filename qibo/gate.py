@@ -245,3 +245,27 @@ Cz = Control[Z]
 
 
 Clifford.register(Cx)
+
+U1 = Rz
+
+
+class U2(Size[1], Gate):
+    def __class_getitem__(cls, phi: float, lambd: float):
+        return type(
+            f"U2[phi={phi}, lambda={lambd}]",
+            (U2,),
+            {
+                "__parameters__": {"phi": phi, "lambda": lambd},
+            },
+        )
+
+
+class U3(Size[1], Gate):
+    def __class_getitem__(cls, theta: float, phi: float, lambd: float):
+        return type(
+            f"U2[phi={phi}, lambda={lambd}]",
+            (U2,),
+            {
+                "__parameters__": {"theta": theta, "phi": phi, "lambda": lambd},
+            },
+        )
