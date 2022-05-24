@@ -1,6 +1,7 @@
 import abc
 from typing import final
 from qibo.gate import Gate
+import pkg_resources
 
 
 class Engine(abc.ABC):
@@ -41,3 +42,8 @@ class MPS:
 
 class PEPS:
     pass
+
+
+engines = {}
+for entrypoint in pkg_resources.iter_entry_points("qibo_engines"):
+    engines[entrypoint.name] = entrypoint.load()
